@@ -37,6 +37,99 @@ class CreateCinemaSchema extends Migration
      */
     public function up()
     {
+        Schema::create('movies', function(Blueprint $table)
+        {
+            $table->bigInteger('id')->unsigned();
+            $table->string('name');
+            $table->string('status')->nullable();
+            $table->timestamps();
+        });
+    
+        Schema::table('timings', function(Blueprint $table)
+        {
+            $table->bigInteger('id')->unsigned();
+            $table->string('name');
+            $table->time('start_time');
+            $table->time('end_time');
+            $table->string('status')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::table('seat_types', function(Blueprint $table)
+        {
+            $table->bigInteger('id')->unsigned();
+            $table->string('name');
+            $table->timestamps();
+        });
+
+        Schema::table('theatres', function(Blueprint $table)
+        {
+            $table->bigInteger('id')->unsigned();
+            $table->string('total_seats');
+            $table->integer('timings_id');
+            $table->string('status')->nullable();
+            $table->foreign('movie_id')->references('id')->on('movies');
+            $table->foreign('timings_id')->references('id')->on('timings');
+            $table->timestamps();
+        });
+
+        Schema::table('threatre_seats', function(Blueprint $table)
+        {
+            $table->bigInteger('id')->unsigned();
+            $table->integer('theatre_id');
+            $table->integer('seat_type_id');
+            $table->integer('serial_no');
+            $table->string('status')->nullable();
+            $table->foreign('theatre_id')->references('id')->on('theatres');
+            $table->foreign('seat_type_id')->references('id')->on('seat_types');
+            $table->timestamps();
+        });
+
+        Schema::table('theatre_shows', function(Blueprint $table)
+        {
+            $table->bigInteger('id')->unsigned();
+            $table->integer('theatre_id');
+            $table->integer('timings_id');
+            $table->string('status')->nullable();
+            $table->foreign('theatre_id')->references('id')->on('theatres');
+            $table->foreign('timings_id')->references('id')->on('timings');
+            $table->timestamps();
+        });
+
+        Schema::table('shows', function(Blueprint $table)
+        {
+            $table->bigInteger('id')->unsigned();
+            $table->integer('movie_id');
+            $table->integer('theatre_shows_id');
+            $table->integer('ticket_price');
+            $table->string('status')->nullable();
+            $table->foreign('movie_id')->references('id')->on('movies');
+            $table->foreign('theatre_shows_id')->references('id')->on('theatre_shows');
+            $table->timestamps();
+        });
+
+        Schema::table('bookings', function(Blueprint $table)
+        {
+            $table->bigInteger('id')->unsigned();
+            $table->integer('show_id');
+            $table->integer('threatre_seat_id');
+            $table->string('status')->nullable();
+            $table->foreign('show_id')->references('id')->on('shows');
+            $table->foreign('threatre_seat_id')->references('id')->on('threatre_seats');
+            $table->timestamps();
+        });
+
+        Schema::table('discounts', function(Blueprint $table)
+        {
+            $table->bigInteger('id')->unsigned();
+            $table->integer('discount');
+            $table->integer('threatre_seat_id');
+            $table->string('status')->nullable();
+            $table->foreign('show_id')->references('id')->on('shows');
+            $table->foreign('threatre_seat_id')->references('id')->on('threatre_seats');
+            $table->timestamps();
+        });
+
         throw new \Exception('implement in coding task 4, you can ignore this exception if you are just running the initial migrations.');
     }
 
@@ -47,5 +140,6 @@ class CreateCinemaSchema extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('pay_cycles');
     }
 }
