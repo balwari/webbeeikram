@@ -140,6 +140,14 @@ class CreateCinemaSchema extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('pay_cycles');
+        Schema::dropIfExists('movies');
+        Schema::dropIfExists('timings');
+        Schema::dropIfExists('seat_types');
+        Schema::dropIfExists('theatres');
+        Schema::dropIfExists('threatre_seats');
+        Schema::dropIfExists('theatre_shows');
+        Schema::dropIfExists('shows');
+        Schema::dropIfExists('bookings');
+        Schema::dropIfExists('discounts');
     }
 }
